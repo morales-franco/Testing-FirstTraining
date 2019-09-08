@@ -3,3 +3,7 @@
 ################################################################################
 
 /Testing.Essential/.vs/Testing.Essential/v16
+/Testing.Essential/Testing.Essential.Core/bin/Debug
+/Testing.Essential/Testing.Essential.Core/obj/Debug
+/Testing.Essential/Testing.Essential.Core.Test/bin/Debug
+/Testing.Essential/Testing.Essential.Core.Test/obj/Debug
