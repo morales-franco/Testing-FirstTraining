@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Testing.Essential.Core.Test
@@ -34,7 +35,7 @@ namespace Testing.Essential.Core.Test
         [TestInitialize]
         public void TestInitialize()
         {
-            if(TestContext.TestName == "FileNameDoesExist")
+            if(TestContext.TestName.StartsWith("FileNameDoesExist"))
             {
                 SetGoodFileName();
 
@@ -52,7 +53,7 @@ namespace Testing.Essential.Core.Test
         [TestCleanup]
         public void TestCleanup()
         {
-            if (TestContext.TestName == "FileNameDoesExist")
+            if (TestContext.TestName.StartsWith("FileNameDoesExist"))
             {
                 if (!string.IsNullOrEmpty(_GoodFileName))
                 {
@@ -68,6 +69,9 @@ namespace Testing.Essential.Core.Test
         public TestContext TestContext { get; set; }
 
         [TestMethod]
+        [Description("Check to see if a file does exist")]
+        [Owner("Franco Morales")]
+        [Priority(0)]
         public void FileNameDoesExist()
         {
             //TODO: Ey! I need to write the unit test later!
@@ -93,6 +97,26 @@ namespace Testing.Essential.Core.Test
         }
 
         [TestMethod]
+        public void FileNameDoesExistSimpleMessage()
+        {
+            FileProcess fileProcess = new FileProcess();
+            bool fileExists = false;
+
+            File.AppendAllText(_GoodFileName, "Hello world!");
+
+            //Step 2: Act
+
+            fileExists = fileProcess.FileExists(_GoodFileName);
+
+            //Step 3: Assert
+
+            Assert.IsFalse(fileExists, "File {0} Does NOT Exist.", _GoodFileName);
+        }
+
+        [TestMethod]
+        [Description("Check to see if a file does NOT exist")]
+        [Owner("Dev 2")]
+        [TestCategory("NoException")]
         public void FileNameDoesNotExist()
         {
             //Step 1: Arrange
@@ -110,7 +134,10 @@ namespace Testing.Essential.Core.Test
         }
 
         [TestMethod]
+        [Owner("Ninja Dev")]
         [ExpectedException(typeof(ArgumentNullException))]
+        [Priority(1)]
+        [TestCategory("Exception")]
         public void FileNameNullOrEmpty_ThrowsArgumentNullException()
         {
             FileProcess fileProcess = new FileProcess();
@@ -118,6 +145,7 @@ namespace Testing.Essential.Core.Test
         }
 
         [TestMethod]
+        [Ignore]
         public void FileNameNullOrEmpty_ThrowsArgumentNullException_UsingTryCatch()
         {
             FileProcess fileProcess = new FileProcess();
@@ -134,6 +162,14 @@ namespace Testing.Essential.Core.Test
             Assert.Fail("Call to FileExists did not throw an ArgumentNullException");
 
         }
+
+        [TestMethod]
+        [Timeout(3000)]
+        public void SimulateTimeout()
+        {
+            Thread.Sleep(4000);
+        }
+
 
         private void SetGoodFileName()
         {
